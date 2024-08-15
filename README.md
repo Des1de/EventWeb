@@ -1,8 +1,10 @@
 Configure database in appsettings
-Restroe nuget packages
+
+Restore nuget packages
 ```
 dotnet restore 
 ```
+
 Update database in API and create content folder 
 ```
 cd EventWeb.API
