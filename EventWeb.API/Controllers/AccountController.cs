@@ -24,7 +24,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
+        public async Task<IActionResult> Login([FromForm] LoginRequestDTO request)
         {
             var token = await _loginUserUseCase.Login(request.Email, request.Password); 
             HttpContext.Response.Cookies.Append("NotJwtToken", token); 
@@ -32,7 +32,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO request)
+        public async Task<IActionResult> Register([FromForm] RegistrationRequestDTO request)
         {
             var user = _mapper.Map<User>(request); 
             await _registerUserUseCase.Register(user, request.Password); 
