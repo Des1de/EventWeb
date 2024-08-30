@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using System.Text;
+using EventWeb.Application.Abstractions;
 using EventWeb.Core.Abstractions;
 using EventWeb.Core.Models;
-using EventWeb.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

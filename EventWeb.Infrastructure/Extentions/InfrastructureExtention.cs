@@ -1,3 +1,4 @@
+using EventWeb.Application.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventWeb.Infrastructure.Extentions

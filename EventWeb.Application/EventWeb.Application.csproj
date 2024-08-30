@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventWeb.Core\EventWeb.Core.csproj" />
-    <ProjectReference Include="..\EventWeb.Infrastructure\EventWeb.Infrastructure.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <PropertyGroup>

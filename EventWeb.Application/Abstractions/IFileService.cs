@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace EventWeb.Infrastructure
+namespace EventWeb.Application.Abstractions
 {
     public interface IFileService
     {

@@ -1,3 +1,4 @@
+using EventWeb.Application.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace EventWeb.Infrastructure; 

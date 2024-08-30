@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace EventWeb.Infrastructure
+namespace EventWeb.Application.Abstractions
 {
     public interface IJwtProvider
     {

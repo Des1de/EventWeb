@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventWeb.Core\EventWeb.Core.csproj" />
+    <ProjectReference Include="..\EventWeb.Application\EventWeb.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

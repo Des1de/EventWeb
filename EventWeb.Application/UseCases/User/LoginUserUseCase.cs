@@ -1,6 +1,6 @@
 using System.Security.Claims;
+using EventWeb.Application.Abstractions;
 using EventWeb.Core.Models;
-using EventWeb.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 
 namespace EventWeb.Application.UseCases

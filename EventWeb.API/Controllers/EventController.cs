@@ -1,9 +1,9 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
+using EventWeb.Application.Abstractions;
 using EventWeb.Core.Abstractions;
 using EventWeb.Core.Models;
 using EventWeb.Core.Models.Parameters;
-using EventWeb.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
