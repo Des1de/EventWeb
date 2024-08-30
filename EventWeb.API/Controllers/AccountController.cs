@@ -1,8 +1,7 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
-using EventWeb.Core.Abstractions;
+using EventWeb.Application.UseCases;
 using EventWeb.Core.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventWeb.API.Controllers
@@ -11,19 +10,23 @@ namespace EventWeb.API.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly IUserService _userService; 
+        private readonly RegisterUserUseCase _registerUserUseCase;
+        private readonly LoginUserUseCase _loginUserUseCase;
         private readonly IMapper _mapper; 
 
-        public AccountController(IUserService userService, IMapper mapper)
+        public AccountController(IMapper mapper, 
+            RegisterUserUseCase registerUserUseCase,
+            LoginUserUseCase loginUserUseCase)
         {
             _mapper = mapper; 
-            _userService = userService; 
+            _registerUserUseCase = registerUserUseCase; 
+            _loginUserUseCase = loginUserUseCase;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
-            var token = await _userService.Login(request.Email, request.Password); 
+            var token = await _loginUserUseCase.Login(request.Email, request.Password); 
             HttpContext.Response.Cookies.Append("NotJwtToken", token); 
             return Ok(token); 
         }
@@ -32,7 +35,7 @@ namespace EventWeb.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO request)
         {
             var user = _mapper.Map<User>(request); 
-            await _userService.Register(user, request.Password); 
+            await _registerUserUseCase.Register(user, request.Password); 
             return Ok(); 
         }
     }

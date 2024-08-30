@@ -1,6 +1,6 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
-using EventWeb.Core.Abstractions.Services;
+using EventWeb.Application.UseCases;
 using EventWeb.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,19 +11,32 @@ namespace EventWeb.API.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _categoryService; 
+        private readonly GetAllCategoriesUseCase _getAllCategoriesUseCase; 
+        private readonly GetCategoryByIdUseCase _getCategoryByIdUseCase;
+        private readonly CreateCategoryUseCase _createCategoryUseCase; 
+        private readonly UpdateCategoryUseCase _updateCategoryUseCase; 
+        private readonly DeleteCategoryUseCase _deleteCategoryUseCase;
         private readonly IMapper _mapper; 
 
-        public CategoryController(ICategoryService categoryService, IMapper mapper)
+        public CategoryController(IMapper mapper,
+            GetAllCategoriesUseCase getAllCategoriesUseCase,
+            GetCategoryByIdUseCase getCategoryByIdUseCase,
+            CreateCategoryUseCase createCategoryUseCase,
+            UpdateCategoryUseCase updateCategoryUseCase,
+            DeleteCategoryUseCase deleteCategoryUseCase)
         {
-            _categoryService = categoryService;
+            _getAllCategoriesUseCase = getAllCategoriesUseCase;
+            _getCategoryByIdUseCase = getCategoryByIdUseCase; 
+            _createCategoryUseCase = createCategoryUseCase; 
+            _updateCategoryUseCase = updateCategoryUseCase; 
+            _deleteCategoryUseCase = deleteCategoryUseCase; 
             _mapper = mapper; 
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var categories = await _categoryService.GetAllCategories();
+            var categories = await _getAllCategoriesUseCase.GetAllCategories();
             var response = _mapper.Map<IEnumerable<CategoryResponseDTO>>(categories);
             return Ok(response); 
         }
@@ -31,7 +44,7 @@ namespace EventWeb.API.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
-            var category = await _categoryService.GetCategoryById(id);
+            var category = await _getCategoryByIdUseCase.GetCategoryById(id);
             var response = _mapper.Map<CategoryResponseDTO>(category);
             return Ok(response); 
         }
@@ -41,7 +54,7 @@ namespace EventWeb.API.Controllers
         public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDTO request)
         {
             var category = _mapper.Map<Category>(request); 
-            await _categoryService.CreateCategory(category); 
+            await _createCategoryUseCase.CreateCategory(category); 
             return NoContent(); 
         }
 
@@ -50,7 +63,7 @@ namespace EventWeb.API.Controllers
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryRequestDTO request)
         {
             var category = _mapper.Map<Category>(request); 
-            await _categoryService.UpdateCategory(id, category); 
+            await _updateCategoryUseCase.UpdateCategory(id, category); 
             return NoContent(); 
         }
 
@@ -58,7 +71,7 @@ namespace EventWeb.API.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            await _categoryService.DeleteCategory(id); 
+            await _deleteCategoryUseCase.DeleteCategory(id); 
             return NoContent();
         }
     }

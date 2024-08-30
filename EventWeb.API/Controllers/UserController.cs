@@ -1,5 +1,6 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
+using EventWeb.Application.UseCases;
 using EventWeb.Core.Abstractions;
 using EventWeb.Core.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,20 +12,21 @@ namespace EventWeb.API.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService; 
+        private readonly GetAllUsersUseCase _getAllUsersUseCase;  
         private readonly IMapper _mapper; 
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IMapper mapper,
+            GetAllUsersUseCase getAllUsersUseCase)
         {
             _mapper = mapper; 
-            _userService = userService; 
+            _getAllUsersUseCase = getAllUsersUseCase; 
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllUsers();
+            var users = await _getAllUsersUseCase.GetAllUsers();
             var response = _mapper.Map<IEnumerable<UserResponseDTO>>(users); 
             return Ok(response);
         }

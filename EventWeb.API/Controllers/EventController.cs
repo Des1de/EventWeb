@@ -1,6 +1,7 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
 using EventWeb.Application.Abstractions;
+using EventWeb.Application.UseCases;
 using EventWeb.Core.Abstractions;
 using EventWeb.Core.Models;
 using EventWeb.Core.Models.Parameters;
@@ -13,22 +14,37 @@ namespace EventWeb.API.Controllers
     [Route("api/[controller]")]
     public class EventController : ControllerBase
     {
-        private readonly IEventService _eventService;
+        private readonly CreateEventUseCase _createEventUseCase; 
+        private readonly UpdateEventUseCase _updateEventUseCase;
+        private readonly DeleteEventUseCase _deleteEventUseCase; 
+        private readonly GetAllEventsUseCase _getAllEventsUseCase; 
+        private readonly GetEventByIdUseCase _getEventByIdUseCase; 
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        public EventController(IEventService eventService, IMapper mapper, IFileService fileService, IWebHostEnvironment hostingEnvironment)
-        {
-            _eventService = eventService;   
+        public EventController(IMapper mapper, 
+            IFileService fileService, 
+            IWebHostEnvironment hostingEnvironment,
+            CreateEventUseCase createEventUseCase,
+            UpdateEventUseCase updateEventUseCase, 
+            DeleteEventUseCase deleteEventUseCase, 
+            GetAllEventsUseCase getAllEventsUseCase, 
+            GetEventByIdUseCase getEventByIdUseCase)
+        {  
             _mapper = mapper;
             _fileService = fileService; 
             _hostingEnvironment = hostingEnvironment; 
+            _createEventUseCase = createEventUseCase; 
+            _updateEventUseCase = updateEventUseCase; 
+            _deleteEventUseCase = deleteEventUseCase; 
+            _getAllEventsUseCase = getAllEventsUseCase;
+            _getEventByIdUseCase = getEventByIdUseCase; 
         }
 
         [HttpGet]
         public async Task<IActionResult> GetEvents([FromQuery] EventParameters parameters)
         {
-            var events = await _eventService.GetAllEvents(parameters);
+            var events = await _getAllEventsUseCase.GetAllEvents(parameters);
             var eventDtos = new List<EventResponseDTO>();
 
             foreach (var eventEntity in events)
@@ -49,7 +65,7 @@ namespace EventWeb.API.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetEventById(Guid id)
         {
-            var eventEntity = await _eventService.GetEventById(id); 
+            var eventEntity = await _getEventByIdUseCase.GetEventById(id); 
             var eventDto = _mapper.Map<EventResponseDTO>(eventEntity);
             if(eventEntity?.ImageUrl != null) 
             {
@@ -65,7 +81,7 @@ namespace EventWeb.API.Controllers
         {
             var newEvent = _mapper.Map<Event>(request);
             newEvent.ImageUrl = await _fileService.SaveFileAsync(request.Image, _hostingEnvironment.ContentRootPath + "/content");
-            await _eventService.CreateEvent(newEvent);
+            await _createEventUseCase.CreateEvent(newEvent);
             return NoContent();
         }
 
@@ -73,11 +89,11 @@ namespace EventWeb.API.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> UpdateEvent(Guid id, [FromForm] EventRequestDTO request)
         {
-            var oldUrl = (await _eventService.GetEventById(id))?.ImageUrl;
+            var oldUrl = (await _getEventByIdUseCase.GetEventById(id))?.ImageUrl;
             var updatedEvent = _mapper.Map<Event>(request);
             _fileService.DeleteFile(oldUrl);
             updatedEvent.ImageUrl = await _fileService.SaveFileAsync(request.Image, _hostingEnvironment.ContentRootPath + "/content");
-            await _eventService.UpdateEvent(id, updatedEvent);
+            await _updateEventUseCase.UpdateEvent(id, updatedEvent);
             return NoContent();
         }
 
@@ -85,10 +101,10 @@ namespace EventWeb.API.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeleteEvent(Guid id)
         {
-            var deletingEvent = await _eventService.GetEventById(id); 
+            var deletingEvent = await _getEventByIdUseCase.GetEventById(id); 
             var ImageUrl = deletingEvent?.ImageUrl; 
             _fileService.DeleteFile(ImageUrl);
-            await _eventService.DeleteEvent(id);
+            await _deleteEventUseCase.DeleteEvent(id);
             return NoContent();
         }
     }
