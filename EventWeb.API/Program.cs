@@ -1,4 +1,5 @@
 using EventWeb.API.Extentions;
+using EventWeb.Application.Extentions;
 using EventWeb.Application.Services;
 using EventWeb.Core.Abstractions;
 using EventWeb.Core.Abstractions.Repositories;
@@ -35,10 +36,7 @@ builder.Services.AddDbContext<EventContext>(
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>() 
-    .AddScoped<IUserService, UserService>()
-    .AddScoped<ICategoryService, CategoryService>()
-    .AddScoped<IParticipationService, ParticipationService>()
-    .AddScoped<IEventService, EventService>();
+    .ConfigureUseCases();
 
 var app = builder.Build();
 
