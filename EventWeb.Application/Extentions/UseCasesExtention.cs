@@ -18,7 +18,8 @@ namespace EventWeb.Application.Extentions
         {
             services.AddScoped<GetAllUsersUseCase>()
                     .AddScoped<RegisterUserUseCase>()
-                    .AddScoped<LoginUserUseCase>(); 
+                    .AddScoped<LoginUserUseCase>()
+                    .AddScoped<RefreshUserUseCase>(); 
             return services; 
         }
 

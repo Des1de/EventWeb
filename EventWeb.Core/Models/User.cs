@@ -8,5 +8,7 @@ namespace EventWeb.Core.Models
         public string Surname { get; set; } = null!; 
         public DateOnly BirthDay { get; set; }
         public IEnumerable<Participation> Participations { get; set; } = null!; 
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshExpire { get; set; }
     }
 }

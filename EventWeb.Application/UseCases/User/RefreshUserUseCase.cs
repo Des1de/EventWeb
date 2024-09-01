@@ -5,32 +5,31 @@ using Microsoft.AspNetCore.Identity;
 
 namespace EventWeb.Application.UseCases
 {
-    public class LoginUserUseCase
+    public class RefreshUserUseCase
     {
         private readonly UserManager<User> _userManager;
         private readonly IJwtProvider _jwtProvider; 
 
-        public LoginUserUseCase(UserManager<User> userManager, IJwtProvider jwtProvider)
+        public RefreshUserUseCase(UserManager<User> userManager, IJwtProvider jwtProvider)
         {
             _userManager = userManager; 
             _jwtProvider = jwtProvider; 
         }
 
-        public async Task<TokenModel> Login(string email, string password)
+        public async Task<TokenModel> Refresh(string email, string refreshToken)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            if(user == null)
+            if(user is null)
             {
-                throw new Exception("Failed to login"); 
+                throw new Exception("User not found"); 
             }
-            
-            var result = await _userManager.CheckPasswordAsync(user, password);
-            
-            if(result == false)
+
+            if(!_jwtProvider.ValidateRefreshToken(user, refreshToken))
             {
-                throw new Exception("Failed to login"); 
+                throw new Exception("Invalid refresh token"); 
             }
+
             var userRoles = await _userManager.GetRolesAsync(user);
             List<Claim> claims = [new("userId", user.Id.ToString())]; 
             foreach (var userRole in userRoles)
@@ -40,10 +39,10 @@ namespace EventWeb.Application.UseCases
 
             var token = _jwtProvider.GenerateToken(claims);
 
-            var refreshToken = _jwtProvider.GenerateRefreshToken(); 
+            var newRefreshToken = _jwtProvider.GenerateRefreshToken(); 
             var refreshExpire = _jwtProvider.GetRefreshExpireDays(); 
 
-            user.RefreshToken = refreshToken;
+            user.RefreshToken = newRefreshToken;
             user.RefreshExpire = DateTime.UtcNow.AddDays(refreshExpire); 
 
             await _userManager.UpdateAsync(user); 
@@ -51,7 +50,7 @@ namespace EventWeb.Application.UseCases
             return new TokenModel
             {
                 AccessToken = token, 
-                RefreshToken = refreshToken
+                RefreshToken = newRefreshToken
             };
         }
     }
