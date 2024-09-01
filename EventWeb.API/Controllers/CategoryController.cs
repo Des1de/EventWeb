@@ -50,7 +50,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDTO request)
         {
             var category = _mapper.Map<Category>(request); 
@@ -59,7 +59,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryRequestDTO request)
         {
             var category = _mapper.Map<Category>(request); 
@@ -68,7 +68,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
             await _deleteCategoryUseCase.DeleteCategory(id); 

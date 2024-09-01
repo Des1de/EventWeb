@@ -1,7 +1,6 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
 using EventWeb.Application.UseCases;
-using EventWeb.Core.Abstractions;
 using EventWeb.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +36,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="User")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> CreateParticipation([FromBody] ParticipationRequestDTO request)
         {
             var participation = _mapper.Map<Participation>(request); 
@@ -45,7 +44,7 @@ namespace EventWeb.API.Controllers
             return NoContent(); 
         }
         [HttpDelete]
-        [Authorize(Roles ="User")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> DeleteParticipation([FromBody] Guid id)
         {
             await _deleteParticipationUseCase.DeleteParticipation(id); 

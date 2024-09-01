@@ -2,7 +2,6 @@ using AutoMapper;
 using EventWeb.API.DTOs;
 using EventWeb.Application.Abstractions;
 using EventWeb.Application.UseCases;
-using EventWeb.Core.Abstractions;
 using EventWeb.Core.Models;
 using EventWeb.Core.Models.Parameters;
 using Microsoft.AspNetCore.Authorization;
@@ -76,7 +75,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> CreateEvent([FromForm] EventRequestDTO request)
         {
             var newEvent = _mapper.Map<Event>(request);
@@ -86,7 +85,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateEvent(Guid id, [FromForm] EventRequestDTO request)
         {
             var oldUrl = (await _getEventByIdUseCase.GetEventById(id))?.ImageUrl;
@@ -98,7 +97,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteEvent(Guid id)
         {
             var deletingEvent = await _getEventByIdUseCase.GetEventById(id); 

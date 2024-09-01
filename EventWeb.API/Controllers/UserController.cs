@@ -1,8 +1,6 @@
 using AutoMapper;
 using EventWeb.API.DTOs;
 using EventWeb.Application.UseCases;
-using EventWeb.Core.Abstractions;
-using EventWeb.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +21,7 @@ namespace EventWeb.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _getAllUsersUseCase.GetAllUsers();
