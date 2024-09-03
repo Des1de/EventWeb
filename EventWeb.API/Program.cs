@@ -1,9 +1,6 @@
 using EventWeb.API.Extentions;
 using EventWeb.Application.Extentions;
-using EventWeb.Application.Services;
-using EventWeb.Core.Abstractions;
 using EventWeb.Core.Abstractions.Repositories;
-using EventWeb.Core.Abstractions.Services;
 using EventWeb.DataAccess.Contexts;
 using EventWeb.DataAccess.Repositories;
 using EventWeb.Infrastructure;
@@ -22,7 +19,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureLogger()
             .ConfigureIdentity()
             .ConfigureMapper()
-            .ConfigureAPIAuthentication(builder.Configuration); 
+            .ConfigureAPIAuthentication(builder.Configuration)
+            .ConfigureAutoFluentValidation(); 
 
 builder.Services.ConfigureInfrastructure(); 
 

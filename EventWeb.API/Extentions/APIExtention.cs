@@ -3,11 +3,11 @@ using System.Text;
 using EventWeb.Core.Models;
 using EventWeb.DataAccess.Contexts;
 using EventWeb.Infrastructure;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Writers;
 using Serilog;
 
 namespace EventWeb.API.Extentions
@@ -94,6 +94,13 @@ namespace EventWeb.API.Extentions
                     );
                 }
             );
+            return services; 
+        }
+
+        public static IServiceCollection ConfigureAutoFluentValidation(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssembly(typeof(APIExtention).Assembly);
+            services.AddFluentValidationAutoValidation(); 
             return services; 
         }
     }
